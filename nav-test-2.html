@@ -1,0 +1,552 @@
+<html w-tid="0">
+   <head w-tid="1">
+      <style>
+         html {
+            min-height: 100%;
+         }
+         .ctxmenu {
+            position: fixed;
+            border: 1px solid #999;
+            padding: 2px 0;
+            box-shadow: #aaa 3px 3px 3px;
+            background: #fff;
+            margin: 0;
+            z-index: 9999;
+            overflow-y: auto;
+            font: 15px Verdana, sans-serif;
+            box-sizing: border-box;
+         }
+         .ctxmenu li {
+            margin: 1px 0;
+            display: block;
+            position: relative;
+            user-select: none;
+         }
+         .ctxmenu li.heading {
+            font-weight: bold;
+            margin-left: -5px;
+         }
+         .ctxmenu li span {
+            display: block;
+            padding: 2px 20px;
+            cursor: default;
+         }
+         .ctxmenu li a {
+            color: inherit;
+            text-decoration: none;
+         }
+         .ctxmenu li.icon {
+            padding-left: 15px;
+         }
+         .ctxmenu img.icon {
+            position: absolute;
+            width: 18px;
+            left: 10px;
+            top: 2px;
+         }
+         .ctxmenu li.disabled {
+            color: #ccc;
+         }
+         .ctxmenu li.divider {
+            border-bottom: 1px solid #aaa;
+            margin: 5px 0;
+         }
+         .ctxmenu li.interactive:hover {
+            background: rgba(0, 0, 0, 0.1);
+         }
+         .ctxmenu li.submenu::after {
+            content: '';
+            position: absolute;
+            display: block;
+            top: 0;
+            bottom: 0;
+            right: 0.4em;
+            margin: auto 0.1rem auto auto;
+            border-right: 1px solid #000;
+            border-top: 1px solid #000;
+            transform: rotate(45deg);
+            width: 0.3rem;
+            height: 0.3rem;
+         }
+         .ctxmenu li.submenu.disabled::after {
+            border-color: #ccc;
+         }
+      </style>
+      <base href="" w-tid="2" />
+      <link
+         rel="stylesheet"
+         href="/fonts.css?v=46020c16bc46ba5143e997f6a89d4d2980a28bbd"
+      />
+      <link
+         rel="stylesheet"
+         href="/ctxmenu.css?v=46020c16bc46ba5143e997f6a89d4d2980a28bbd"
+      />
+
+      <meta charset="UTF-8" w-tid="3" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+         w-tid="4"
+      />
+      <title w-tid="5">repoStats</title>
+      <link rel="preconnect" href="https://rsms.me/" w-tid="6" />
+      <link rel="stylesheet" href="https://rsms.me/inter/inter.css" w-tid="7" />
+
+      <style w-tid="8">
+         html {
+            --text: hsl(260, 33%, 93%);
+            --background: hsl(260, 33%, 7%);
+            --primary: hsl(260, 46%, 70%);
+            --secondary: hsl(260, 59%, 20%);
+            --accent: hsl(260, 60%, 40%);
+         }
+
+         /* Variables */
+         html {
+            --font-scale: calc(1 + 1 / 3);
+            --small: calc(var(--p) / var(--font-scale));
+            --p: 1.25rem;
+            --h5: calc(var(--p) * var(--font-scale));
+            --h4: calc(var(--h5) * var(--font-scale));
+            --h3: calc(var(--h4) * var(--font-scale));
+            --h2: calc(var(--h3) * var(--font-scale));
+            --h1: calc(var(--h2) * var(--font-scale));
+
+            --theme-toggle-width: 3rem;
+         }
+
+         /* Universal styles */
+         * {
+            box-sizing: border-box;
+         }
+
+         html,
+         body {
+            margin: 0;
+            padding: 0;
+         }
+
+         html {
+            min-height: 100%;
+            line-height: 1.5;
+         }
+
+         /* Font styles */
+         body {
+            font-family: Inter;
+            font-variant-numeric: slashed-zero;
+            letter-spacing: 0.1rem;
+            font-size: var(--p);
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.5rem;
+            transition-property: color, background-color, border-color,
+               transform;
+            transition-duration: 0.3s;
+            transition-timing-function: ease;
+         }
+
+         small,
+         .small {
+            font-size: var(--small);
+         }
+
+         h1 {
+            font-size: var(--h1);
+         }
+
+         h2 {
+            font-size: var(--h2);
+         }
+
+         h3 {
+            font-size: var(--h3);
+         }
+
+         h4 {
+            font-size: var(--h4);
+         }
+
+         h5 {
+            font-size: var(--h5);
+         }
+
+         label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+         }
+
+         input,
+         select {
+            font-size: var(--p);
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.7rem;
+            border-width: 0.2rem;
+            border-style: solid;
+            border-color: var(--primary);
+            background-color: var(--background);
+            color: var(--text);
+            font-family: inherit;
+            cursor: pointer;
+         }
+
+         input:focus-visible {
+            outline-offset: 0.1rem;
+            outline-width: 0.1rem;
+            outline-style: solid;
+            outline-color: var(--text);
+         }
+
+         select {
+            text-transform: none;
+         }
+
+         a {
+            display: block;
+            color: var(--accent);
+         }
+
+         button {
+            padding: 0.5rem 1rem;
+            background-color: var(--accent);
+            color: var(--background);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+         }
+
+         button:hover {
+            background-color: var(--primary);
+         }
+
+         /* Theme toggle styles */
+         #theme-toggle-wrapper {
+            display: flex;
+            align-items: center;
+         }
+
+         #theme-toggle-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+         }
+
+         #theme-toggle-checkbox {
+            display: none;
+         }
+
+         #theme-toggle-switch {
+            width: var(--theme-toggle-width);
+            height: calc(var(--theme-toggle-width) * 0.5);
+            background-color: var(--primary);
+            border-radius: calc(var(--theme-toggle-width) * 0.25);
+            position: relative;
+         }
+
+         .icon {
+            color: var(--accent);
+         }
+
+         #theme-toggle-switch .icon {
+            position: absolute;
+            top: calc(var(--theme-toggle-width) * 0.05);
+            left: calc(var(--theme-toggle-width) * 0.05);
+            width: calc(var(--theme-toggle-width) * 0.4);
+            height: calc(var(--theme-toggle-width) * 0.4);
+            padding: calc(var(--theme-toggle-width) * 0.025);
+            border-radius: 50%;
+            background-color: var(--background);
+         }
+
+         #theme-toggle-checkbox:checked + #theme-toggle-switch .icon {
+            transform: translateX(calc(var(--theme-toggle-width) * 0.5));
+         }
+
+         /* Container styles */
+         .container {
+            background-color: var(--background);
+            border-width: 0.25rem;
+            border-style: solid;
+            border-color: var(--primary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            width: clamp(15rem, 100%, 60rem);
+            margin: 1.25rem 0;
+         }
+
+         .container:last-of-type {
+            margin-bottom: 0;
+         }
+
+         /* Settings styles */
+         #settings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+         }
+
+         .setting {
+            flex-grow: 1;
+            width: clamp(10rem, 100%, 20rem);
+         }
+
+         #repo-link {
+            margin-top: 0.5rem;
+         }
+
+         .setting:has(.error-message.visible) input {
+            border-color: var(--error);
+         }
+
+         /* Disabled state */
+         .setting:has(:disabled) {
+            opacity: 0.6;
+
+            > input {
+               cursor: default;
+            }
+         }
+
+         /* Scrollbar styles */
+         ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+         }
+
+         ::-webkit-scrollbar-track {
+            background: var(--background);
+            border-radius: 5px;
+         }
+
+         ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+         }
+
+         ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+         }
+
+         * {
+            scrollbar-width: thin;
+            scroll-behavior: smooth;
+            scrollbar-color: var(--primary) var(--background);
+         }
+
+         /* Scroll container styles */
+         .scroll-container {
+            overflow: auto;
+            padding: 1rem;
+         }
+
+         .container:has(.scroll-container) {
+            padding: 0.5rem;
+         }
+
+         .scroll-container * {
+            height: max-content;
+            width: max-content;
+         }
+
+         #stats .scroll-container {
+            max-height: 30rem;
+         }
+
+         /* Navbar styles */
+         .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary);
+            padding: 10px;
+            color: var(--text);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+         }
+
+         .navbar-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent);
+         }
+
+         .navbar-item {
+            padding: 10px;
+         }
+
+         .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+         }
+
+         .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: var(--secondary);
+            z-index: 900;
+            padding-top: 60px;
+            box-sizing: border-box;
+         }
+
+         .sidebar.active {
+            left: 0;
+         }
+
+         .sidebar-content {
+            padding: 20px;
+            color: var(--text);
+         }
+
+         .main-content {
+            margin-top: 60px;
+            padding: 20px;
+         }
+
+         @media (max-width: 600px) {
+            .navbar {
+               justify-content: space-between;
+            }
+
+            .sidebar-toggle {
+               display: block;
+            }
+
+            .navbar-item:not(.navbar-title):not(#theme-toggle-wrapper) {
+               display: none;
+            }
+
+            .sidebar {
+               transition: left 0.3s ease-in-out;
+            }
+         }
+      </style>
+   </head>
+
+   <body w-tid="9">
+      <nav class="navbar" w-tid="10">
+         <button class="sidebar-toggle" w-tid="11">☰</button>
+         <div class="navbar-item" w-tid="12">Home</div>
+         <div class="navbar-item navbar-title" w-tid="13">repoStats</div>
+         <div class="navbar-item" w-tid="14">About</div>
+         <div id="theme-toggle-wrapper" class="navbar-item" w-tid="15">
+            <label id="theme-toggle-label" w-tid="16">
+               <input type="checkbox" id="theme-toggle-checkbox" w-tid="17" />
+               <div id="theme-toggle-switch" w-tid="18">
+                  <div id="dark-theme-icon" class="icon" w-tid="19"></div>
+               </div>
+            </label>
+         </div>
+      </nav>
+
+      <div class="sidebar" w-tid="20" style="">
+         <div class="sidebar-content" w-tid="21">
+            <h2 w-tid="22">Menu</h2>
+            <p w-tid="23">Home</p>
+            <p w-tid="24">About</p>
+         </div>
+      </div>
+
+      <div class="main-content" w-tid="25">
+         <div id="settings" class="container scrollable" w-tid="26">
+            <div class="setting" w-tid="27">
+               <label for="repo-input" w-tid="28">Repository:</label>
+               <datalist id="repo-list" w-tid="29">
+                  <option value="csmith1188/Formbar.js" w-tid="30"></option>
+                  <option value="csmith1188/formPix" w-tid="31"></option>
+                  <option value="CP2324/docpacs2324" w-tid="32"></option>
+                  <option
+                     value="ProfBrickz/ProfBrickz.github.io"
+                     w-tid="33"
+                  ></option>
+                  <option value="ProfBrickz/LegoSetTracker" w-tid="34"></option>
+                  <option value="ProfBrickz/RepoStats" w-tid="35"></option>
+               </datalist>
+               <input
+                  id="repo-input"
+                  type="text"
+                  name="repo-input"
+                  placeholder="username/repository"
+                  autocomplete="off"
+                  list="repo-list"
+                  w-tid="36"
+               />
+               <div
+                  id="repo-error"
+                  class="error-message small hidden"
+                  w-tid="37"
+               ></div>
+               <a
+                  id="repo-link"
+                  class="small hidden"
+                  href="https://github.com/csmith1188/Formbar.js"
+                  target="_blank"
+                  w-tid="38"
+               >
+                  View on GitHub
+               </a>
+            </div>
+            <div class="setting" w-tid="39">
+               <label for="branch-input" w-tid="40">Branch:</label>
+               <select
+                  id="branch-input"
+                  name="branch-input"
+                  w-tid="41"
+               ></select>
+            </div>
+            <div class="setting" w-tid="42">
+               <label for="period-input" w-tid="43">Time Period:</label>
+               <select id="period-input" name="period-input" w-tid="44">
+                  <option value="7d" w-tid="45">Last 7 days</option>
+                  <option value="30d" w-tid="46">Last 30 days</option>
+                  <option value="3m" w-tid="47">Last 3 months</option>
+                  <option value="1y" w-tid="48">Last year</option>
+                  <option value="all" w-tid="49">All time</option>
+               </select>
+            </div>
+         </div>
+      </div>
+
+      <script w-tid="50">
+         const sidebar = document.querySelector('.sidebar')
+         const sidebarToggle = document.querySelector('.sidebar-toggle')
+
+         sidebarToggle.addEventListener('click', function () {
+            sidebar.classList.toggle('active')
+         })
+
+         // Function to check window width and close sidebar if necessary
+         function checkWindowWidth() {
+            if (window.innerWidth > 600) {
+               sidebar.style.transition = 'none'
+               sidebar.classList.remove('active')
+               setTimeout(() => {
+                  sidebar.style.transition = ''
+               }, 100)
+            }
+         }
+
+         // Add event listener for window resize
+         window.addEventListener('resize', checkWindowWidth)
+
+         // Initial check when the page loads
+         checkWindowWidth()
+      </script>
+   </body>
+</html>
